@@ -23,6 +23,7 @@ namespace Movies.Views.Home
     {
         private readonly IMoviesService _moviesService;
         private readonly INetworkMonitorService _networkMonitorService;
+        private readonly ILoggerService _loggerService;
 
         public HomePageViewModel(INavigationService navigationService,
             IMoviesService moviesService,
@@ -31,6 +32,7 @@ namespace Movies.Views.Home
         {
             _moviesService = moviesService;
             _networkMonitorService = networkMonitorService;
+            _loggerService = loggerService;
 
             AllMovies = new EnhancedReactiveCollection<MoviesGroupCollection>().AddTo(Disposables);
 
@@ -41,55 +43,16 @@ namespace Movies.Views.Home
 
             moviesService
                 .ObserveErrors
-                .Subscribe(error =>
-                {
-                    if (error == null) return;
-
-                    loggerService.Error(error);
-                    ShowError("Something went wrong loading movies, try again later!");
-
-                }).AddTo(Disposables);
+                .WhereNotNull()
+                .Subscribe(OnError)
+                .AddTo(Disposables);
 
             moviesService
                 .ObserveMoviesPager
                 .WhereNotNull()
                 .Where(x => x.Any())
-                .Subscribe(result =>
-                {
-                    var accumulator = new List<MoviesGroupCollection>();
-                    var observable = result.ToObservable();
-
-                    observable
-                        .SelectMany(x => x.ObserveMoviesByGenre.WhereNotNull())
-                        .Where(x => x.Any())
-                        .Select(x =>
-                        {
-                            var collection = new MoviesGroupCollection(x.Genre, CreateMovieBindableItem(x));
-                            accumulator.Add(collection);
-                            return collection;
-                        })
-                        .TakeLast(1)
-                        .Subscribe(_ =>
-                        {
-                            var popular = accumulator.FirstOrDefault(x => x.Header.IsPopular);
-
-                            if (popular != null)
-                            {
-                                accumulator.Remove(popular);
-                                accumulator = accumulator.OrderBy(x => x.Header.Name).ToList();
-                                accumulator.Insert(0, popular);
-                            }
-
-                            AllMovies.ClearOnScheduler();
-                            AllMovies.AddRangeOnScheduler(accumulator);
-                        }).AddTo(Disposables);
-
-                    observable
-                        .SelectMany(x => x.ObserveNewPageGrouped)
-                        .Where(x => x != null)
-                        .Subscribe(x => { OnNewPage(CreateMovieBindableItem(x), x.Genre.Name); })
-                        .AddTo(Disposables);
-                }).AddTo(Disposables);
+                .Subscribe(OnMoviesPager)
+                .AddTo(Disposables);
 
             RefreshCommand = new ReactiveCommand()
                 .WithSubscribe(OnRefreshCommand)
@@ -119,6 +82,49 @@ namespace Movies.Views.Home
                     if(AllMovies.Count == 0)
                         _moviesService.Initialize();
                 }).AddTo(Disposables);
+        }
+
+        private void OnMoviesPager(List<MoviePager> result)
+        {
+            var accumulator = new List<MoviesGroupCollection>();
+            var observable = result.ToObservable();
+
+            observable
+                .SelectMany(x => x.ObserveMoviesByGenre.WhereNotNull())
+                .Where(x => x.Any())
+                .Select(x =>
+                {
+                    var collection = new MoviesGroupCollection(x.Genre, CreateMovieBindableItem(x));
+                    accumulator.Add(collection);
+                    return collection;
+                })
+                .TakeLast(1)
+                .Subscribe(_ =>
+                {
+                    var popular = accumulator.FirstOrDefault(x => x.Header.IsPopular);
+
+                    if (popular != null)
+                    {
+                        accumulator.Remove(popular);
+                        accumulator = accumulator.OrderBy(x => x.Header.Name).ToList();
+                        accumulator.Insert(0, popular);
+                    }
+
+                    AllMovies.ClearOnScheduler();
+                    AllMovies.AddRangeOnScheduler(accumulator);
+                }).AddTo(Disposables);
+
+            observable
+                .SelectMany(x => x.ObserveNewPageGrouped)
+                .Where(x => x != null)
+                .Subscribe(x => { OnNewPage(CreateMovieBindableItem(x), x.Genre.Name); })
+                .AddTo(Disposables);
+        }
+
+        private void OnError(Exception ex)
+        {
+            _loggerService.Error(ex);
+            ShowError("Something went wrong loading movies, try again later!");
         }
 
         private void OnNewPage(IEnumerable<MovieBindableItem> items, string header)
