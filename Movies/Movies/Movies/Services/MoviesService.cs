@@ -49,7 +49,7 @@ namespace Movies.Services
 
         public IObservable<Exception> ObserveErrors => _errors
             .Merge(_moviesBehaviorSubject.WhereNotNull()
-                .SelectMany(x => x.Select(y => y.ObserveErrors).Merge()).StartWith(new Exception()))
+                .SelectMany(x => x.Select(y => y.ObserveErrors).Merge()))
             .Merge(_genresService.ObserveErrors);
 
         public IObservable<List<MoviePager>> ObserveMoviesPager => _moviesBehaviorSubject;

@@ -33,7 +33,6 @@ namespace Movies.Views
                 .AddTo(Disposables);
 
             HasError = ErrorMessage
-                .WhereNotNull()
                 .Select(x => !string.IsNullOrEmpty(x))
                 .ToReadOnlyReactiveProperty()
                 .AddTo(Disposables);
