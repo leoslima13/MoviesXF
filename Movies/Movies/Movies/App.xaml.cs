@@ -59,13 +59,7 @@ namespace Movies
 
             NavigationService.NavigateAsync(Pages.HomePage)
                 .ToObservable()
-                .Subscribe(result =>
-                {
-                    if (result.Success)
-                    {
-                        
-                    }
-                });
+                .Subscribe();
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
