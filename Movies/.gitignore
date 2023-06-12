@@ -407,7 +407,3 @@ ASALocalRun/
 
 # Local History for Visual Studio
 .localhistory/
-
-# Mobile.BuildTools
-appsettings.json
-appsettings.*.json
