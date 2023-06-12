@@ -12,6 +12,7 @@
           <ResourceDictionary Source="Styles/Spacing.xaml" />
           <ResourceDictionary Source="Styles/Buttons.xaml" />
           <ResourceDictionary Source="Styles/Labels.xaml" />
+          <ResourceDictionary Source="Views/ControlTemplates/BaseContentTemplate.xaml" />
         </ResourceDictionary.MergedDictionaries>
 
       </ResourceDictionary>

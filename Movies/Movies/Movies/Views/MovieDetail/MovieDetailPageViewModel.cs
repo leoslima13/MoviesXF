@@ -5,12 +5,14 @@ using Prism.Navigation;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using Movies.Extensions;
+using Movies.Services;
 
 namespace Movies.Views.MovieDetail
 {
     public class MovieDetailPageViewModel : BaseViewModel
     {
-        public MovieDetailPageViewModel(INavigationService navigationService) : base(navigationService)
+        public MovieDetailPageViewModel(INavigationService navigationService,
+            INetworkMonitorService networkMonitorService) : base(navigationService, networkMonitorService)
         {
             PosterPath = new ReactiveProperty<string>().AddTo(Disposables);
             Title = new ReactiveProperty<string>().AddTo(Disposables);
@@ -23,14 +25,14 @@ namespace Movies.Views.MovieDetail
                 .WithSubscribe(() => NavigationService.GoBackAsync().ToObservable().Subscribe().AddTo(Disposables))
                 .AddTo(Disposables);
         }
-        
+
         public ReactiveProperty<string> PosterPath { get; }
         public ReactiveProperty<string> Title { get; }
         public ReactiveProperty<DateTime> ReleasedDate { get; }
         public ReactiveProperty<int> Rating { get; }
         public ReactiveProperty<double> VoteAverage { get; }
         public ReactiveProperty<string> Overview { get; }
-        
+
         public ReactiveCommand BackCommand { get; }
 
         public override void Initialize(INavigationParameters parameters)
@@ -50,14 +52,14 @@ namespace Movies.Views.MovieDetail
             VoteAverage.Value = bindableItem.VoteAverage;
         }
     }
-    
-    public class MovieDetailPageParameter 
+
+    public class MovieDetailPageParameter
     {
         public MovieDetailPageParameter(MovieBindableItem movieBindableItem)
         {
             MovieBindableItem = movieBindableItem;
         }
-        
+
         public MovieBindableItem MovieBindableItem { get; }
     }
 }

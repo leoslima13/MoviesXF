@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ResourceDictionary xmlns="http://xamarin.com/schemas/2014/forms"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                    xmlns:views="clr-namespace:Movies.Views;assembly=Movies"
+                    xmlns:xamanimation="clr-namespace:Xamanimation;assembly=Xamanimation">
+    <ControlTemplate x:Key="BaseTemplate">
+        <Grid RowDefinitions="auto, *">
+            <Grid BindingContext="{Binding Source={RelativeSource TemplatedParent}}"
+                x:DataType="{views:BaseViewModel}"
+                IsVisible="{Binding BindingContext.IsOffline.Value}"
+                BackgroundColor="{StaticResource PrimaryColor}"
+                Opacity=".8">
+                <Label Padding="{StaticResource Medium-Space}"
+                       Text="You're offline"
+                       TextColor="{StaticResource WhiteColor}"
+                       HorizontalOptions="Center" />
+            </Grid>
+            <ContentPresenter Grid.Row="1" />
+            <Grid x:Name="ErrorBanner"
+                  Grid.Row="1"
+                  BindingContext="{Binding Source={RelativeSource TemplatedParent}}"
+                  x:DataType="{views:BaseViewModel}"
+                  IsVisible="{Binding BindingContext.HasError.Value}"
+                  BackgroundColor="{StaticResource PrimaryColor}"
+                  VerticalOptions="End"
+                  Padding="{StaticResource Large-Space}">
+                <Label Text="{Binding BindingContext.ErrorMessage.Value}"
+                       TextColor="{StaticResource WhiteColor}"
+                       HorizontalOptions="Center" />
+                <Grid.Triggers>
+                    <DataTrigger TargetType="Grid" Binding="{Binding BindingContext.HasError.Value}"
+                                 Value="True">
+                        <DataTrigger.EnterActions>
+                            <xamanimation:BeginAnimation>
+                                <xamanimation:BeginAnimation.Animation>
+                                    <xamanimation:FadeInAnimation Target="{x:Reference ErrorBanner}"
+                                                                  Duration="250" />
+                                </xamanimation:BeginAnimation.Animation>
+                            </xamanimation:BeginAnimation>
+                        </DataTrigger.EnterActions>
+                    </DataTrigger>
+                </Grid.Triggers>
+            </Grid>
+        </Grid>
+    </ControlTemplate>
+</ResourceDictionary>

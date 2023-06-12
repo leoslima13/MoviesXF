@@ -29,30 +29,36 @@ namespace Movies.Services
         private readonly CompositeDisposable _disposables = new();
         private readonly IGenresService _genresService;
         private readonly IApi _api;
+        private readonly INetworkMonitorService _networkMonitorService;
         private readonly BehaviorSubject<List<MoviePager>> _moviesBehaviorSubject;
         private readonly Subject<Exception> _errors;
         private readonly BusyNotifier _busyNotifier = new BusyNotifier();
 
-        public MoviesService(IGenresService genresService, IApi api)
+        public MoviesService(IGenresService genresService, IApi api, INetworkMonitorService networkMonitorService)
         {
             _genresService = genresService;
             _api = api;
+            _networkMonitorService = networkMonitorService;
 
-            _moviesBehaviorSubject = new BehaviorSubject<List<MoviePager>>(null).AddTo(_disposables);
+            _moviesBehaviorSubject = new BehaviorSubject<List<MoviePager>>(new List<MoviePager>()).AddTo(_disposables);
             _errors = new Subject<Exception>().AddTo(_disposables);
         }
 
         public IObservable<bool> ObserveBusy => _busyNotifier.CombineLatestOr(_moviesBehaviorSubject.WhereNotNull()
-            .SelectMany(x => x.Select(y => y.ObserveLoading).Merge()).StartWith(true));
+            .SelectMany(x => x.Select(y => y.ObserveLoading).Merge()));
 
         public IObservable<Exception> ObserveErrors => _errors
-            .CombineLatest(_moviesBehaviorSubject.WhereNotNull()
-                .SelectMany(x => x.Select(y => y.ObserveErrors).Merge()), (internalEx, error) => internalEx ?? error);
+            .Merge(_moviesBehaviorSubject.WhereNotNull()
+                .SelectMany(x => x.Select(y => y.ObserveErrors).Merge()).StartWith(new Exception()))
+            .Merge(_genresService.ObserveErrors);
 
         public IObservable<List<MoviePager>> ObserveMoviesPager => _moviesBehaviorSubject;
 
         public void Initialize()
         {
+            if (!_networkMonitorService.HasInternetConnection)
+                return;
+            
             var busy = _busyNotifier.ProcessStart();
             var pagers = new List<MoviePager>();
             
@@ -86,6 +92,9 @@ namespace Movies.Services
 
         public void Page(Genre genre)
         {
+            if (!_networkMonitorService.HasInternetConnection)
+                return;
+            
             var pager = _moviesBehaviorSubject.Value.FirstOrDefault(m => m.Genre.Id == genre.Id);
             pager?.Page();
         }

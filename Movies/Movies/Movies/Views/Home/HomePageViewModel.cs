@@ -15,17 +15,22 @@ using Movies.Views.MovieDetail;
 using Prism.Navigation;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
+using Xamarin.Essentials;
 
 namespace Movies.Views.Home
 {
     public class HomePageViewModel : BaseViewModel
     {
         private readonly IMoviesService _moviesService;
+        private readonly INetworkMonitorService _networkMonitorService;
 
         public HomePageViewModel(INavigationService navigationService,
-            IMoviesService moviesService) : base(navigationService)
+            IMoviesService moviesService,
+            INetworkMonitorService networkMonitorService,
+            ILoggerService loggerService) : base(navigationService, networkMonitorService)
         {
             _moviesService = moviesService;
+            _networkMonitorService = networkMonitorService;
 
             AllMovies = new EnhancedReactiveCollection<MoviesGroupCollection>().AddTo(Disposables);
 
@@ -33,14 +38,16 @@ namespace Movies.Views.Home
                 .ObserveBusy
                 .ToReadOnlyReactiveProperty()
                 .AddTo(Disposables);
-            
+
             moviesService
                 .ObserveErrors
                 .Subscribe(error =>
                 {
-                    if (error != null)
-                    {
-                    }
+                    if (error == null) return;
+
+                    loggerService.Error(error);
+                    ShowError("Something went wrong loading movies, try again later!");
+
                 }).AddTo(Disposables);
 
             moviesService
@@ -51,7 +58,7 @@ namespace Movies.Views.Home
                 {
                     var accumulator = new List<MoviesGroupCollection>();
                     var observable = result.ToObservable();
-                    
+
                     observable
                         .SelectMany(x => x.ObserveMoviesByGenre.WhereNotNull())
                         .Where(x => x.Any())
@@ -65,14 +72,14 @@ namespace Movies.Views.Home
                         .Subscribe(_ =>
                         {
                             var popular = accumulator.FirstOrDefault(x => x.Header.IsPopular);
-                            
+
                             if (popular != null)
                             {
                                 accumulator.Remove(popular);
                                 accumulator = accumulator.OrderBy(x => x.Header.Name).ToList();
                                 accumulator.Insert(0, popular);
                             }
-                            
+
                             AllMovies.ClearOnScheduler();
                             AllMovies.AddRangeOnScheduler(accumulator);
                         }).AddTo(Disposables);
@@ -80,10 +87,7 @@ namespace Movies.Views.Home
                     observable
                         .SelectMany(x => x.ObserveNewPageGrouped)
                         .Where(x => x != null)
-                        .Subscribe(x =>
-                        {
-                            OnNewPage(CreateMovieBindableItem(x), x.Genre.Name);
-                        })
+                        .Subscribe(x => { OnNewPage(CreateMovieBindableItem(x), x.Genre.Name); })
                         .AddTo(Disposables);
                 }).AddTo(Disposables);
 
@@ -106,6 +110,15 @@ namespace Movies.Views.Home
         public override void Initialize(INavigationParameters parameters)
         {
             _moviesService.Initialize();
+
+            IsOffline
+                .Skip(1)
+                .Where(x => !x)
+                .Subscribe(_ =>
+                {
+                    if(AllMovies.Count == 0)
+                        _moviesService.Initialize();
+                }).AddTo(Disposables);
         }
 
         private void OnNewPage(IEnumerable<MovieBindableItem> items, string header)
@@ -139,7 +152,7 @@ namespace Movies.Views.Home
         {
             if (IsBusy.Value)
                 return;
-            
+
             _moviesService.Initialize();
         }
     }

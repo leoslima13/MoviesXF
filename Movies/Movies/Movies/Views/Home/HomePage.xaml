@@ -33,7 +33,8 @@
         <RefreshView Grid.Row="1"
                      RefreshColor="{StaticResource PurpleColor}"
                      IsRefreshing="{Binding IsBusy.Value}"
-                     Command="{Binding RefreshCommand}">
+                     Command="{Binding RefreshCommand}"
+                     ControlTemplate="{StaticResource BaseTemplate}">
             <ScrollView>
                 <StackLayout VerticalOptions="FillAndExpand"
                              Padding="{StaticResource Medium-Space}"

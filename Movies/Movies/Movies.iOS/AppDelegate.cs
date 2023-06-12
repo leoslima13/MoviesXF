@@ -29,6 +29,8 @@ namespace Movies.iOS
             global::Xamarin.Forms.Forms.Init();
             CachedImageRenderer.Init();
             iOSMaterialFrameRenderer.Init();
+            //Prevent linker to remove Xamanimation
+            _ = new Xamanimation.FadeInAnimation();
             LoadApplication(new App(new IosInitializer()));
 
             return base.FinishedLaunching(app, options);
