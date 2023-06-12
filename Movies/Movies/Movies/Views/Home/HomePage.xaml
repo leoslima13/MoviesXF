@@ -5,11 +5,8 @@
              xmlns:home="clr-namespace:Movies.Views.Home;assembly=Movies"
              xmlns:components="clr-namespace:Movies.Views.Home.Components;assembly=Movies"
              xmlns:toolkit="http://xamarin.com/schemas/2020/toolkit"
-             xmlns:forms="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              xmlns:mvvm="http://prismlibrary.com"
              xmlns:controls="clr-namespace:Movies.Controls;assembly=Movies"
-             xmlns:pancakeView="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
-             xmlns:transformations="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations"
              NavigationPage.HasNavigationBar="False"
              mvvm:ViewModelLocator.AutowireViewModel="True"
              x:Class="Movies.Views.Home.HomePage"
@@ -30,68 +27,56 @@
             </Label>
         </Grid>
 
-        <RefreshView Grid.Row="1"
-                     RefreshColor="{StaticResource PurpleColor}"
-                     IsRefreshing="{Binding IsBusy.Value}"
-                     Command="{Binding RefreshCommand}"
+        <ContentView Grid.Row="1"
                      ControlTemplate="{StaticResource BaseTemplate}">
-            <ScrollView>
-                <StackLayout VerticalOptions="FillAndExpand"
-                             Padding="{StaticResource Medium-Space}"
-                             BindableLayout.ItemsSource="{Binding AllMovies}"
-                             Spacing="{StaticResource Large-Space-Value}">
-                    <BindableLayout.ItemTemplate>
-                        <DataTemplate x:DataType="components:MoviesGroupCollection">
-                            <StackLayout>
-                                <Label Margin="{StaticResource L-Small-Space}"
-                                       TextColor="{StaticResource WhiteColor}"
-                                       Text="{Binding Header.Name}"
-                                       FontFamily="{StaticResource RobotoMedium}"
-                                       FontSize="{StaticResource Small-Font}" />
-                                
-                                <CollectionView HeightRequest="{OnPlatform iOS='252', Android='270'}"
-                                            ItemsSource="{Binding .}"
-                                            SelectionMode="None"
-                                            ItemSizingStrategy="MeasureFirstItem"
-                                            HorizontalScrollBarVisibility="Never"
-                                            VerticalScrollBarVisibility="Never"
-                                            RemainingItemsThreshold="4"
-                                            RemainingItemsThresholdReachedCommand="{Binding Source={RelativeSource AncestorType={x:Type home:HomePageViewModel}}, Path=LoadMoreCommand}"
-                                            RemainingItemsThresholdReachedCommandParameter="{Binding .}">
-                                <CollectionView.ItemsLayout>
-                                    <LinearItemsLayout Orientation="Horizontal"
-                                                       ItemSpacing="{StaticResource Large-Space-Value}" />
-                                </CollectionView.ItemsLayout>
-                                <CollectionView.ItemTemplate>
-                                    <DataTemplate x:DataType="components:MovieBindableItem">
-                                        <!-- <pancakeView:PancakeView  -->
-                                        <!--     IsClippedToBounds="True" -->
-                                        <!--     WidthRequest="170" -->
-                                        <!--     HeightRequest="252" -->
-                                        <!--     CornerRadius="16" -->
-                                        <!--     Padding="0" -->
-                                        <!--     Border="{pancakeView:BorderMarkup Thickness=1, Color={StaticResource PrimaryColor}}" -->
-                                        <!--     toolkit:TouchEffect.Command="{Binding SelectCommand}" -->
-                                        <!--     toolkit:TouchEffect.NativeAnimation="True"> -->
-                                        <!--     <forms:CachedImage -->
-                                        <!--         Aspect="AspectFill" -->
-                                        <!--         DownsampleToViewSize="true" -->
-                                        <!--         Source="{Binding PosterPath}" /> -->
-                                        <!-- </pancakeView:PancakeView > -->
-                                        <controls:MovieBackdropImage WidthRequest="170"
-                                                                     HeightRequest="252" 
-                                                                     toolkit:TouchEffect.Command="{Binding SelectCommand}"
-                                                                     toolkit:TouchEffect.NativeAnimation="True"
-                                                                     Source="{Binding PosterPath}" />
-                                    </DataTemplate>
-                                </CollectionView.ItemTemplate>
-                            </CollectionView>
-                            </StackLayout>
-                        </DataTemplate>
-                    </BindableLayout.ItemTemplate>
-                </StackLayout>
-            </ScrollView>
-        </RefreshView>
+            <RefreshView
+                RefreshColor="{StaticResource PurpleColor}"
+                IsRefreshing="{Binding IsBusy.Value}"
+                Command="{Binding RefreshCommand}">
+                <ScrollView>
+                    <StackLayout VerticalOptions="FillAndExpand"
+                                 Padding="{StaticResource Medium-Space}"
+                                 BindableLayout.ItemsSource="{Binding AllMovies}"
+                                 Spacing="{StaticResource Large-Space-Value}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="components:MoviesGroupCollection">
+                                <StackLayout>
+                                    <Label Margin="{StaticResource L-Small-Space}"
+                                           TextColor="{StaticResource WhiteColor}"
+                                           Text="{Binding Header.Name}"
+                                           FontFamily="{StaticResource RobotoMedium}"
+                                           FontSize="{StaticResource Small-Font}" />
+
+                                    <CollectionView HeightRequest="{OnPlatform iOS='252', Android='270'}"
+                                                    ItemsSource="{Binding .}"
+                                                    SelectionMode="None"
+                                                    ItemSizingStrategy="MeasureFirstItem"
+                                                    HorizontalScrollBarVisibility="Never"
+                                                    VerticalScrollBarVisibility="Never"
+                                                    RemainingItemsThreshold="4"
+                                                    RemainingItemsThresholdReachedCommand="{Binding Source={RelativeSource AncestorType={x:Type home:HomePageViewModel}}, Path=LoadMoreCommand}"
+                                                    RemainingItemsThresholdReachedCommandParameter="{Binding .}">
+                                        <CollectionView.ItemsLayout>
+                                            <LinearItemsLayout Orientation="Horizontal"
+                                                               ItemSpacing="{StaticResource Large-Space-Value}" />
+                                        </CollectionView.ItemsLayout>
+                                        <CollectionView.ItemTemplate>
+                                            <DataTemplate x:DataType="components:MovieBindableItem">
+                                                <controls:MovieBackdropImage WidthRequest="170"
+                                                                             HeightRequest="252"
+                                                                             toolkit:TouchEffect.Command="{Binding SelectCommand}"
+                                                                             toolkit:TouchEffect.NativeAnimation="True"
+                                                                             Source="{Binding PosterPath}" />
+                                            </DataTemplate>
+                                        </CollectionView.ItemTemplate>
+                                    </CollectionView>
+                                </StackLayout>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </StackLayout>
+                </ScrollView>
+            </RefreshView>
+        </ContentView>
 
     </Grid>
 </ContentPage>

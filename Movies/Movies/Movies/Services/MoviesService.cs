@@ -45,7 +45,7 @@ namespace Movies.Services
         }
 
         public IObservable<bool> ObserveBusy => _busyNotifier.CombineLatestOr(_moviesBehaviorSubject.WhereNotNull()
-            .SelectMany(x => x.Select(y => y.ObserveLoading).Merge()));
+            .SelectMany(x => x.Select(y => y.ObserveLoading).Merge()).StartWith(true));
 
         public IObservable<Exception> ObserveErrors => _errors
             .Merge(_moviesBehaviorSubject.WhereNotNull()
