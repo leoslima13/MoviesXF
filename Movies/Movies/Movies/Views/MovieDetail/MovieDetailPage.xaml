@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<pages:PopupPage xmlns="http://xamarin.com/schemas/2014/forms"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                 xmlns:pages="http://rotorgames.com"
+                 x:Class="Movies.Views.MovieDetail.MovieDetailPage"
+                 xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+                 xmlns:forms="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+                 xmlns:movieDetail="clr-namespace:Movies.Views.MovieDetail;assembly=Movies"
+                 xmlns:materialFrame="http://sharpnado.com"
+                 xmlns:toolkit="http://xamarin.com/schemas/2020/toolkit"
+                 xmlns:fonts="clr-namespace:Movies.Fonts;assembly=Movies"                 
+                 xmlns:rating="clr-namespace:Rating;assembly=Rating"
+                 xmlns:pancakeView="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
+                 xmlns:controls="clr-namespace:Movies.Controls;assembly=Movies"
+                 prism:ViewModelLocator.AutowireViewModel="True"
+                 x:DataType="movieDetail:MovieDetailPageViewModel"
+                 Padding="{StaticResource Medium-Space}"
+                 BackgroundColor="#33000000"
+                 CloseWhenBackgroundIsClicked="False">
+    <pages:PopupPage.Animation>
+        <pages:ScaleAnimation
+            PositionIn="Center"
+            PositionOut="Center"
+            ScaleIn="1.2"
+            ScaleOut="0.8"
+            DurationIn="400"
+            DurationOut="300"
+            EasingIn="SinOut"
+            EasingOut="SinIn"
+            HasBackgroundAnimation="True" />
+    </pages:PopupPage.Animation>
+
+    <Grid>
+        <materialFrame:MaterialFrame HasShadow="False"
+                                     MaterialTheme="AcrylicBlur"
+                                     MaterialBlurStyle="Dark"
+                                     CornerRadius="16"
+                                     Padding="{StaticResource Medium-Space}">
+            <Grid RowDefinitions="auto, *, auto">
+                
+                <controls:MovieBackdropImage Grid.Row="0"
+                                             WidthRequest="320"
+                                             HeightRequest="500"
+                                             Source="{Binding PosterPath.Value}" />
+
+                <ScrollView Grid.Row="1">
+                    <StackLayout
+                        Spacing="{StaticResource Small-Space-Value}"
+                        VerticalOptions="FillAndExpand">
+
+                        <Label Text="{Binding Title.Value}"
+                               Style="{StaticResource TitleLabel}"
+                               HorizontalOptions="CenterAndExpand" />
+
+                        <Label FontFamily="{StaticResource RobotoMedium}"
+                               FontSize="{StaticResource Medium-Font}">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="Released: " TextColor="{StaticResource Gray500}" />
+                                    <Span Text="{Binding ReleasedDate.Value, StringFormat='{0:MM/dd/yyyy}'}"
+                                          TextColor="{StaticResource WhiteColor}" />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+
+                        <rating:RatingBar SelectedStarValue="{Binding VoteAverage.Value}"
+                                          EmptyStarImage="star_white.png"
+                                          FillStarImage="star_yellow.png"
+                                          InputTransparent="true" />
+
+                        <Label Text="{Binding Rating.Value, StringFormat='{0} ratings'}"
+                               TextColor="{StaticResource PrimaryColor}"
+                               FontFamily="{StaticResource RobotoMedium}"
+                               FontSize="{StaticResource Small-Font}" />
+
+                        <Label Text="{Binding Overview.Value}"
+                               Style="{StaticResource ContentLabel}" />
+
+                    </StackLayout>
+
+                </ScrollView>
+
+                <Grid ColumnDefinitions="*,*"
+                      Grid.Row="2"
+                      ColumnSpacing="{StaticResource Large-Space-Value}"
+                      VerticalOptions="EndAndExpand">
+                    <Button Grid.Column="0"
+                            Style="{StaticResource OutlineButton}"
+                            FontFamily="{StaticResource RobotoMedium}"
+                            Text="Back"
+                            Command="{Binding BackCommand}" />
+
+                    <Button Grid.Column="1"
+                            Text="View Trailer" />
+                </Grid>
+
+            </Grid>
+        </materialFrame:MaterialFrame>
+        <Frame HasShadow="False"
+               WidthRequest="24"
+               HeightRequest="24"
+               CornerRadius="12"
+               Padding="0"
+               toolkit:TouchEffect.Command="{Binding BackCommand}"
+               toolkit:TouchEffect.NativeAnimation="True"
+               VerticalOptions="Start"
+               HorizontalOptions="End"
+               BackgroundColor="{StaticResource PrimaryColor}"
+               Margin="{OnPlatform Android='5,0,0,0', iOS='5,-5,0,0'}">
+            <Label Text="{x:Static fonts:FaIcons.Xmark}"
+                   FontFamily="{StaticResource RobotoMedium}"
+                   TextColor="{StaticResource WhiteColor}"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center"
+                   FontSize="24"
+                   Margin="{OnPlatform Android='0,-5,0,0', iOS='0'}"
+                   InputTransparent="True" />
+        </Frame>
+    </Grid>
+
+</pages:PopupPage>

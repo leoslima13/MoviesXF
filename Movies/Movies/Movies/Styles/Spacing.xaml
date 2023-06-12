@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<ResourceDictionary xmlns="http://xamarin.com/schemas/2014/forms"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <OnIdiom x:Key="Large-Space-Value" x:TypeArguments="x:Double">
+        <OnIdiom.Tablet>32</OnIdiom.Tablet>
+        <OnIdiom.Phone>20</OnIdiom.Phone>
+    </OnIdiom>
+    <OnIdiom x:Key="Medium-Space-Value" x:TypeArguments="x:Double">
+        <OnIdiom.Tablet>16</OnIdiom.Tablet>
+        <OnIdiom.Phone>10</OnIdiom.Phone>
+    </OnIdiom>
+    <OnIdiom x:Key="Small-Space-Value" x:TypeArguments="x:Double">
+        <OnIdiom.Tablet>8</OnIdiom.Tablet>
+        <OnIdiom.Phone>5</OnIdiom.Phone>
+    </OnIdiom>
+
+    <!--  All sides  -->
+    <Thickness x:Key="Large-Space"
+               Bottom="{StaticResource Large-Space-Value}"
+               Left="{StaticResource Large-Space-Value}"
+               Right="{StaticResource Large-Space-Value}"
+               Top="{StaticResource Large-Space-Value}" />
+    <Thickness x:Key="Medium-Space"
+               Bottom="{StaticResource Medium-Space-Value}"
+               Left="{StaticResource Medium-Space-Value}"
+               Right="{StaticResource Medium-Space-Value}"
+               Top="{StaticResource Medium-Space-Value}" />
+    <Thickness x:Key="Small-Space"
+               Bottom="{StaticResource Small-Space-Value}"
+               Left="{StaticResource Small-Space-Value}"
+               Right="{StaticResource Small-Space-Value}"
+               Top="{StaticResource Small-Space-Value}" />
+    <Thickness x:Key="No-Space"
+               Bottom="0"
+               Left="0"
+               Right="0"
+               Top="0" />
+
+    <!--  Left  -->
+    <Thickness x:Key="L-Large-Space" Left="{StaticResource Large-Space-Value}" />
+    <Thickness x:Key="L-Medium-Space" Left="{StaticResource Medium-Space-Value}" />
+    <Thickness x:Key="L-Small-Space" Left="{StaticResource Small-Space-Value}" />
+
+    <!--  Top  -->
+    <Thickness x:Key="T-Large-Space" Top="{StaticResource Large-Space-Value}" />
+    <Thickness x:Key="T-Medium-Space" Top="{StaticResource Medium-Space-Value}" />
+    <Thickness x:Key="T-Small-Space" Top="{StaticResource Small-Space-Value}" />
+
+    <!--  Right  -->
+    <Thickness x:Key="R-Large-Space" Right="{StaticResource Large-Space-Value}" />
+    <Thickness x:Key="R-Medium-Space" Right="{StaticResource Medium-Space-Value}" />
+    <Thickness x:Key="R-Small-Space" Right="{StaticResource Small-Space-Value}" />
+
+    <!--  Bottom  -->
+    <Thickness x:Key="B-Large-Space" Bottom="{StaticResource Large-Space-Value}" />
+    <Thickness x:Key="B-Medium-Space" Bottom="{StaticResource Medium-Space-Value}" />
+    <Thickness x:Key="B-Small-Space" Bottom="{StaticResource Small-Space-Value}" />
+
+
+</ResourceDictionary>
