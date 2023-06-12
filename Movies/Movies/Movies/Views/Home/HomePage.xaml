@@ -29,10 +29,9 @@
 
         <ContentView Grid.Row="1"
                      ControlTemplate="{StaticResource BaseTemplate}">
-            <RefreshView
-                RefreshColor="{StaticResource PurpleColor}"
-                IsRefreshing="{Binding IsBusy.Value}"
-                Command="{Binding RefreshCommand}">
+            <RefreshView RefreshColor="{StaticResource PurpleColor}"
+                         IsRefreshing="{Binding IsBusy.Value}"
+                         Command="{Binding RefreshCommand}">
                 <ScrollView>
                     <StackLayout VerticalOptions="FillAndExpand"
                                  Padding="{StaticResource Medium-Space}"

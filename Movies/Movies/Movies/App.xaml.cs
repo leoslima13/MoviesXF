@@ -39,13 +39,8 @@ namespace Movies
 
         protected override void OnInitialized()
         {
-            var httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
-            ImageService.Instance.Initialize(new Configuration
-            {
-                HttpClient = httpClient
-            });
             LogUnobservedTaskExceptions();
+            ConfigureFFImageService();
             
             InitializeComponent();
             Sharpnado.MaterialFrame.Initializer.Initialize(false, false);
@@ -114,6 +109,16 @@ namespace Movies
                     .AddTypedClient(c => RestService.For<IApi>(c, refitSettings))
                     .AddPolicyHandler((sp, _) => ((INetworkMonitorService) sp.GetService(typeof(INetworkMonitorService))).HasInternetConnection ? retryPolicy : noOpPolicy)
                     .AddPolicyHandler((sp, _) => ((INetworkMonitorService) sp.GetService(typeof(INetworkMonitorService))).HasInternetConnection ? timeoutPolicy : noOpPolicy);
+            });
+        }
+
+        private void ConfigureFFImageService()
+        {
+            var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
+            ImageService.Instance.Initialize(new Configuration
+            {
+                HttpClient = httpClient
             });
         }
     }

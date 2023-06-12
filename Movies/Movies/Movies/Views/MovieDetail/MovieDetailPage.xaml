@@ -43,9 +43,8 @@
                                              Source="{Binding PosterPath.Value}" />
 
                 <ScrollView Grid.Row="1">
-                    <StackLayout
-                        Spacing="{StaticResource Small-Space-Value}"
-                        VerticalOptions="FillAndExpand">
+                    <StackLayout Spacing="{StaticResource Small-Space-Value}"
+                                 VerticalOptions="FillAndExpand">
 
                         <Label Text="{Binding Title.Value}"
                                Style="{StaticResource TitleLabel}"

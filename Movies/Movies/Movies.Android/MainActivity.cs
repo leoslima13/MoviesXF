@@ -1,13 +1,11 @@
-﻿using System;
-using Android.App;
+﻿using Android.App;
 using Android.Content.PM;
 using Android.Runtime;
 using Android.OS;
+using FFImageLoading.Forms.Platform;
 using Prism.Plugin.Popups;
-using Android.Service.QuickSettings;
 using Prism;
 using Prism.Ioc;
-using FFImageLoading.Forms.Platform;
 
 namespace Movies.Droid
 {

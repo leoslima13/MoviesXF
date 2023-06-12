@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using FFImageLoading.Forms.Platform;
+﻿using FFImageLoading.Forms.Platform;
 using Foundation;
 using Prism;
 using Prism.Ioc;
@@ -27,8 +24,8 @@ namespace Movies.iOS
         {
             global::Rg.Plugins.Popup.Popup.Init();
             global::Xamarin.Forms.Forms.Init();
-            CachedImageRenderer.Init();
             iOSMaterialFrameRenderer.Init();
+            CachedImageRenderer.Init();
             //Prevent linker to remove Xamanimation
             _ = new Xamanimation.FadeInAnimation();
             LoadApplication(new App(new IosInitializer()));

@@ -86,7 +86,7 @@ namespace Movies.Views.Home
 
         private void OnMoviesPager(List<MoviePager> result)
         {
-            var accumulator = new List<MoviesGroupCollection>();
+            var allGroupedMovies = new List<MoviesGroupCollection>();
             var observable = result.ToObservable();
 
             observable
@@ -95,23 +95,23 @@ namespace Movies.Views.Home
                 .Select(x =>
                 {
                     var collection = new MoviesGroupCollection(x.Genre, CreateMovieBindableItem(x));
-                    accumulator.Add(collection);
+                    allGroupedMovies.Add(collection);
                     return collection;
                 })
                 .TakeLast(1)
                 .Subscribe(_ =>
                 {
-                    var popular = accumulator.FirstOrDefault(x => x.Header.IsPopular);
+                    var popular = allGroupedMovies.FirstOrDefault(x => x.Header.IsPopular);
 
                     if (popular != null)
                     {
-                        accumulator.Remove(popular);
-                        accumulator = accumulator.OrderBy(x => x.Header.Name).ToList();
-                        accumulator.Insert(0, popular);
+                        allGroupedMovies.Remove(popular);
+                        allGroupedMovies = allGroupedMovies.OrderBy(x => x.Header.Name).ToList();
+                        allGroupedMovies.Insert(0, popular);
                     }
 
                     AllMovies.ClearOnScheduler();
-                    AllMovies.AddRangeOnScheduler(accumulator);
+                    AllMovies.AddRangeOnScheduler(allGroupedMovies);
                 }).AddTo(Disposables);
 
             observable
